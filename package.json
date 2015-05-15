@@ -1,0 +1,26 @@
+{
+  "name": "string-can",
+  "version": "1.0.0",
+  "description": "Heart-to-heart over the line",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git@github.com:StanleyAu/string-can.git"
+  },
+  "keywords": [
+    "chat",
+    "node",
+    "im",
+    "fun",
+    "personal"
+  ],
+  "author": "Stanley Au",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/StanleyAu/string-can/issues"
+  },
+  "homepage": "https://github.com/StanleyAu/string-can"
+}

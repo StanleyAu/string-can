@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>String-Can</title>
+    <link rel="stylesheet" type="text/css" href="stylesheets/sample.css" media="screen" />
+</head>
+
+<body>
+    <ul id="messages"></ul>
+    <form action="">
+        <input id="m" autocomplete="off" />
+        <button>Send</button>
+    </form>
+    <script src="https://cdn.socket.io/socket.io-1.2.0.js"></script>
+    <script src="http://code.jquery.com/jquery-1.11.1.js"></script>
+    <script>
+        var socket = io('/tin');
+        $('form').submit(function () {
+            socket.emit('message', $('#m').val());
+            $('#m').val('');
+            return false;
+        });
+        socket.on('message', function (msg) {
+            $('#messages').append($('<li> ').text(msg));
+        });
+    </script>
+</body>
+
+</html>

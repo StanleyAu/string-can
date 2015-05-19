@@ -3,26 +3,39 @@
 
 <head>
     <title>String-Can</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css">
     <link rel="stylesheet" type="text/css" href="stylesheets/sample.css" media="screen" />
 </head>
 
 <body>
     <ul id="messages"></ul>
-    <form action="">
-        <input id="m" autocomplete="off" />
-        <button>Send</button>
+    <form action="" role="form">
+        <div class="form-group">
+            <label for="cipher" class=".col-md-4"><span class="label label-default">Cipher:</span>
+            </label>
+            <input id="cipher" class="form-control" autocomplete="off" type="password" name="cipher"></input>
+        </div>
+        <div class="form-group">
+            <label for="message" class=".col-md-4"><span class="label label-default">Message:</span>
+            </label>
+            <input id="message" class="form-control" autocomplete="off" type="text" name="message"></input>
+        </div>
+        <button class="btn btn-default">Send</button>
     </form>
     <script src="https://cdn.socket.io/socket.io-1.2.0.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
+    <script src="javascripts/sjcl.js"></script>
     <script>
         var socket = io('/tin');
         $('form').submit(function () {
-            socket.emit('message', $('#m').val());
-            $('#m').val('');
+            var raw_message = $('#message').val();
+            var cipher = $('#cipher').val();
+            socket.emit('message', sjcl.encrypt(cipher, raw_message));
             return false;
         });
         socket.on('message', function (msg) {
-            $('#messages').append($('<li> ').text(msg));
+            var cipher = $('#cipher').val();
+            $('#messages').append($('<li> ').text(sjcl.decrypt(cipher, msg)));
         });
     </script>
 </body>

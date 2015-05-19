@@ -4,6 +4,10 @@
     box-sizing: border-box;
 }
 
+html, body {
+    height: 100%;
+}
+
 body {
     font: 13px Helvetica, Arial;
 }
@@ -11,8 +15,6 @@ body {
 form {
     background: #888888;
     padding: 3px;
-    position: fixed;
-    bottom: 0;
     width: 100%;
 }
 
@@ -22,9 +24,34 @@ form {
 }
 
 #messages li {
+    list-style-type: none;
     padding: 5px 10px;
 }
 
 #messages li:nth-child(odd) {
     background: #eee;
+}
+
+.container {
+    overflow: auto;
+}
+
+.layout {
+    display: flex;
+}
+
+.fit {
+    flex: 1;
+}
+
+.full {
+    flex: 0 0 100%;
+}
+
+.horizontal {
+    flex-direction: row;
+}
+
+.vertical {
+    flex-direction: column;
 }

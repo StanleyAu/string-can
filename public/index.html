@@ -7,35 +7,68 @@
     <link rel="stylesheet" type="text/css" href="stylesheets/sample.css" media="screen" />
 </head>
 
-<body>
-    <ul id="messages"></ul>
-    <form action="" role="form">
-        <div class="form-group">
-            <label for="cipher" class=".col-md-4"><span class="label label-default">Cipher:</span>
-            </label>
-            <input id="cipher" class="form-control" autocomplete="off" type="password" name="cipher"></input>
+<body class="layout vertical">
+    <nav class="navbar navbar-default">
+        <a class="navbar-brand" href="#">String-Chat</a>
+    </nav>
+    <div class="fit layout vertical">
+        <div class="container fit">
+            <ul id="messages"></ul>
         </div>
-        <div class="form-group">
-            <label for="message" class=".col-md-4"><span class="label label-default">Message:</span>
-            </label>
-            <input id="message" class="form-control" autocomplete="off" type="text" name="message"></input>
-        </div>
-        <button class="btn btn-default">Send</button>
-    </form>
+        <form action="" role="form">
+            <div class="form-group">
+                <label for="cipher" class=".col-md-4"><span class="label label-default">Cipher:</span>
+                </label>
+                <input id="cipher" class="form-control" autocomplete="off" type="password" name="cipher"></input>
+            </div>
+            <div class="form-group">
+                <label for="message" class=".col-md-4"><span class="label label-default">Message:</span>
+                </label>
+                <input id="message" class="form-control" autocomplete="off" type="text" name="message"></input>
+            </div>
+            <button class="btn btn-default">Send</button>
+        </form>
+    </div>
     <script src="https://cdn.socket.io/socket.io-1.2.0.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
     <script src="javascripts/sjcl.js"></script>
+    <script src="javascripts/desktop-notify-min.js"></script>
     <script>
+        var permissionLevel = null;
         var socket = io('/tin');
         $('form').submit(function () {
             var raw_message = $('#message').val();
+            if (!raw_message) {
+                return false;
+            }
             var cipher = $('#cipher').val();
             socket.emit('message', sjcl.encrypt(cipher, raw_message));
+            $('#message').val('');
             return false;
         });
         socket.on('message', function (msg) {
             var cipher = $('#cipher').val();
-            $('#messages').append($('<li> ').text(sjcl.decrypt(cipher, msg)));
+            try {
+                var decrypted = sjcl.decrypt(cipher, msg);
+                $('#messages').append($('<li> ').text(decrypted));
+                if (window.permissionLevel === notify.PERMISSION_GRANTED) {
+                    notify.createNotification("String-Chat", {
+                        body: decrypted,
+                        icon: alert.ico
+                    });
+                }
+            } catch (err) {}
+            $('.container').animate({
+                scrollTop: $('#messages').height()
+            }, "fast");
+            while ($('li').length > 500) {
+                $('li').first().remove();
+            }
+        });
+        $(function () {
+            notify.requestPermission(function () {
+                this.permissionLevel = notify.permissionLevel();
+            });
         });
     </script>
 </body>
